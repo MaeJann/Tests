@@ -8,7 +8,7 @@ import pandas as pd
 
 
 # --- Load coordinates and labels 
-data = pd.DataFrame(pd.read_csv('C:/Users/j-mae/Desktop/Master Thesis/Image Data/Test Data/Merged Data/Naxos_Boudin_8/Extracted/Observations_Composite.csv', header=None, sep = ';' ))  
+data = pd.DataFrame(pd.read_csv('C:/Users/j-mae/Desktop/Master Thesis/Image Data/Test Data/Merged Data/Naxos_Boudin_8/Extracted/All_Minerals.csv', header=None, sep = ';' ))  
 data = data.as_matrix()
 x,y = data[:, 1], data[:, 2]
 labels = data[:,3]
@@ -23,7 +23,6 @@ y_max = y + extend
 # --- Load maximum intensity images:
 max_ppl = cv2.imread('C:/Users/j-mae/Desktop/Master Thesis/Image Data/Test Data/Merged Data/Naxos_Boudin_8/Images/plane/Naxos_Boudin_8_ppl_0.jpg')
 max_xpl = cv2.imread('C:/Users/j-mae/Desktop/Master Thesis/Image Data/Test Data/Merged Data/Naxos_Boudin_8/Images/processed/MaxInt.jpg')
-
 
 #%% Functions for feature extraction
 
@@ -145,5 +144,26 @@ Map[Map  == 5] = 250
 
 plt.imshow(Map, cmap = "gray")
 plt.savefig("Map")
-#%%
-)
+#%% Crop out test area as ind. images:
+    
+max_ppl = cv2.imread('C:/Users/j-mae/Desktop/Master Thesis/Image Data/Test Data/Merged Data/Naxos_Boudin_8/Images/Processed/PPL_RGB.jpg')
+#max_ppl = cv2.cvtColor(max_ppl, cv2.COLOR_BGR2HSV) # transform image to HSV color space
+
+max_xpl = cv2.imread('C:/Users/j-mae/Desktop/Master Thesis/Image Data/Test Data/Merged Data/Naxos_Boudin_8/Images/Processed/MaxInt_XPL_RGB.jpg')
+#max_xpl = cv2.cvtColor(max_xpl, cv2.COLOR_BGR2HSV) # transform image to HSV color space
+    
+im_coord= pd.DataFrame(pd.read_csv('C:/Users/j-mae/Desktop/Master Thesis/Image Data/Test Data/Merged Data/Naxos_Boudin_8/Mineral Mapping/Testarea 2/testarea2_coord.csv', header=None, sep = ';' ))  
+im_coord  = im_coord.as_matrix()
+
+
+x_range= np.arange(np.min(im_coord[:, 1]), np.max(im_coord[:, 1]),1)
+y_range = np.arange(np.min(im_coord[:, 2]), np.max(im_coord[:, 2]),1)
+
+testarea_ppl = max_ppl[y_range[0]:y_range[-1], x_range[0]:x_range[-1], :]
+testarea_xpl = max_xpl[y_range[0]:y_range[-1], x_range[0]:x_range[-1], :]
+
+cv2.imwrite('testarea_ppl_RGB.jpg',testarea_ppl)
+cv2.imwrite('testarea_xpl_RGB.jpg',testarea_xpl)
+
+
+
